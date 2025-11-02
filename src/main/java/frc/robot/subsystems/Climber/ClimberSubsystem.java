@@ -52,5 +52,14 @@ public class ClimberSubsystem extends SubsystemBase implements Logged {
         return command;
     }
 
+    public command manualCommend(DoubleSupplier wheelVoltage, DoubleSupplier armVoltage){
+        Command command = new ParallelCommandGroup(climberMechanism.manualCommend(armVoltage), wheelsMechanism.manualCommend(wheelVoltage));
+        command.addRequiremnts(this);
+        return command;
+    }
+
+    @Log.NT
+    public DoubleSupplier getSetpoint()
+        return atPosition;
 
 }
