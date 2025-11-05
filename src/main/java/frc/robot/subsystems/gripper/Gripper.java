@@ -1,0 +1,155 @@
+package frc.robot.subsystems.gripper;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.excalib.control.gains.Gains;
+import frc.excalib.control.motor.controllers.TalonFXMotor;
+import frc.excalib.mechanisms.fly_wheel.FlyWheel;
+import monologue.Annotations.Log;
+import monologue.Logged;
+
+import static frc.robot.subsystems.gripper.GripperConstants.*;
+import static monologue.Annotations.*;
+
+public class Gripper extends SubsystemBase implements Logged {
+    private final TalonFXMotor gripperMotor;
+    public final AnalogInput sensor = new AnalogInput(0); // The number is just a placeholder
+    public GripperStates currentState = GripperStates.VACENT;
+    public Trigger setAlgaeStateTrigger;
+    public Trigger setCoralStateTrigger;
+    public Trigger setEmptyTrigger;
+    private HoldingState currentHoldingState = HoldingState.EMPTY;
+    private final Trigger hasGamePieceTrigger;
+    private final double alpha = 0; // The number is just a placeholder
+    private double filteredValue = 100; // The number is just a placeholder
+
+    public final Trigger hasCoral;
+    public final Trigger hasAlgae;
+
+    private final FlyWheel gripperWheels;
+
+    public Gripper() {
+        gripperMotor = new TalonFXMotor(MOTOR_ID);
+
+        CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
+        limitsConfigs.SupplyCurrentLimit = 10; // The number is just a placeholder
+        limitsConfigs.SupplyCurrentLimitEnable = true;
+
+        gripperMotor.getConfigurator().apply(limitsConfigs);
+
+        gripperWheels = new FlyWheel(
+                gripperMotor,
+                MAX_ACCELERATION,
+                MAX_JERK,
+                new Gains()
+        );
+
+        setDefaultCommand(gripperWheels.manualCommand(() -> currentState.output, this));
+
+        hasAlgae = new Trigger(() -> currentHoldingState.equals(HoldingState.ALGAE));
+        hasCoral = new Trigger(() -> currentHoldingState.equals(HoldingState.CORAL));
+        hasGamePieceTrigger = new Trigger(() -> getFilteredState(sensor.getValue())).debounce(0.1); // The number is just a placeholder
+
+        setCoralStateTrigger = new Trigger(
+                () -> currentHoldingState.equals(HoldingState.CORAL_EXPECTED))
+                .and(hasGamePieceTrigger);
+
+        setCoralStateTrigger.onTrue(new InstantCommand(() -> currentHoldingState = HoldingState.CORAL));
+
+        setAlgaeStateTrigger = new Trigger(
+                () -> currentHoldingState.equals(HoldingState.ALAGE_EXPECTED))
+                .and(hasGamePieceTrigger);
+
+        setAlgaeStateTrigger.onTrue(new InstantCommand(() -> currentHoldingState = HoldingState.ALGAE));
+
+        setEmptyTrigger = new Trigger(
+                () -> currentHoldingState.equals(HoldingState.CORAL))
+                .or(() -> currentHoldingState.equals(HoldingState.ALGAE))
+                .and(hasGamePieceTrigger.negate());
+
+        setEmptyTrigger.onTrue(new InstantCommand(() -> currentHoldingState = HoldingState.EMPTY));
+    }
+
+
+    public Command setStateCommand(GripperStates stateToSet) {
+        return new SequentialCommandGroup(
+                new ConditionalCommand(
+                        new InstantCommand(
+                                () -> this.currentHoldingState = HoldingState.CORAL_EXPECTED),
+                        new InstantCommand(),
+                        () -> stateToSet.equals(GripperStates.INTAKE_CORAL)),
+                new ConditionalCommand(
+                        new InstantCommand(
+                                () -> this.currentHoldingState = HoldingState.ALAGE_EXPECTED),
+                        new InstantCommand(),
+                        () -> stateToSet.equals(GripperStates.INTAKE_ALGAE)),
+                new InstantCommand(() -> currentState = stateToSet));
+    }
+
+    @Override
+    public void periodic() {
+        filteredValue = alpha * (sensor.getValue()) + (1 - alpha) * sensor.getValue();
+    }
+
+    @Log.NT
+    public boolean getAlgaeTrigger() {
+        return hasAlgae.getAsBoolean();
+    }
+
+    @Log.NT
+    public boolean getCoralTrigger() {
+        return hasCoral.getAsBoolean();
+    }
+
+    @Log.NT
+    public HoldingState getCurrentHoldingState() {
+        return currentHoldingState;
+    }
+
+    @Log.NT
+    public boolean getHasGamePieceTrigger() {
+        return hasGamePieceTrigger.getAsBoolean();
+    }
+
+    enum HoldingState {
+        ALGAE,
+        CORAL,
+        EMPTY,
+        CORAL_EXPECTED,
+        ALAGE_EXPECTED,
+    }
+
+    @Log.NT
+    public double getSensorVal() {
+        return sensor.getValue();
+    }
+
+    @Log
+    public double getFilteredValue() {
+        return filteredValue;
+    }
+
+
+
+    double trueCount= 0, falseCount = 0;
+    boolean getFilteredState(double reading) {
+        if (reading < 80) {
+            trueCount++;
+            falseCount = 0;
+        } else if (reading > 180) {
+            falseCount++;
+            trueCount = 0;
+        }
+
+        if (trueCount > STABLE_COUNT) filtered = true;
+        if (falseCount > STABLE_COUNT) filtered = false;
+
+        return filtered;
+    }
+
+
+}
