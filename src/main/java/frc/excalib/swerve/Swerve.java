@@ -25,7 +25,6 @@ import frc.excalib.control.gains.SysidConfig;
 import frc.excalib.control.imu.IMU;
 import frc.excalib.control.math.Vector2D;
 import frc.excalib.slam.mapper.Odometry;
-import frc.robot.Constants;
 import monologue.Logged;
 import org.json.simple.parser.ParseException;
 
@@ -36,7 +35,6 @@ import java.util.function.Supplier;
 
 import static edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kTextView;
 import static frc.excalib.additional_utilities.Elastic.Notification.NotificationLevel.WARNING;
-import static frc.robot.Constants.DEADBAND_VALUE;
 import static frc.robot.Constants.SwerveConstants.*;
 import static monologue.Annotations.Log;
 
@@ -525,7 +523,7 @@ public class Swerve extends SubsystemBase implements Logged {
                             angleController.calculate(
                                     getPose2D().getRotation().getRadians(),
                                     pathPlannnerTargetPose.getRotation().getRadians())
-                    ).plus(pathPlannerChasisSpeeds.times(PATH_PLANNER_DEESCALATION_SCALAR))
+                    ).plus(pathPlannerChasisSpeeds.times(0))
             );
         }
     }
@@ -543,6 +541,6 @@ public class Swerve extends SubsystemBase implements Logged {
     }
 
     private double applyDeadband(double value) {
-        return Math.abs(value) < DEADBAND_VALUE ? 0 : value;
+        return Math.abs(value) < 0 ? 0 : value;
     }
 }

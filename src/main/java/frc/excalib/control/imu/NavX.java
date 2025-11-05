@@ -4,7 +4,6 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
-import monologue.Annotations;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
