@@ -1,10 +1,10 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.Climber;
 
 import frc.excalib.control.gains.Gains;
 import frc.excalib.control.limits.SoftLimit;
 import frc.excalib.control.math.physics.Mass;
 
-public class Constants {
+public class constants {
 
     public static final int MOTOR1_ID = 1; // The number is just a placeholder
     public static final int MOTOR2_ID = 2; // The number is just a placeholder

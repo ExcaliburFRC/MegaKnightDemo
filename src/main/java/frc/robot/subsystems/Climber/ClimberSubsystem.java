@@ -1,4 +1,4 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.Climber;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.revrobotics.spark.SparkLowLevel;
@@ -16,7 +16,7 @@ import monologue.Logged;
 
 import java.util.function.DoubleSupplier;
 
-import static frc.robot.subsystems.climber.Constants.*;
+import static frc.robot.subsystems.Climber.constants.*;
 
 public class ClimberSubsystem extends SubsystemBase implements Logged {
     private final TalonFXMotor firstMotor, secondMotor;
