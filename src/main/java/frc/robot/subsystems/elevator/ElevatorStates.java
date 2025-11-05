@@ -21,8 +21,8 @@ public enum ElevatorStates {
 
     DEFAULT_WITH_CORAL(0), // The number is just a placeholder
     DEFAULT_WITH_ALGAE(0), // The number is just a placeholder
-    DEFAULT_WITHOUT_GAMEPICE(0), // The number is just a placeholder
 
+    SAFE_HEIGHT(0), // The number is just a placeholder
     L1_HEIGHT(0), // The number is just a placeholder
 
     CLIMB(0); // The number is just a placeholder
