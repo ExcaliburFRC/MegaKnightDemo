@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -38,7 +37,6 @@ public class ArmSubsystem extends SubsystemBase implements Logged {
     private ArmPosition currentState;
     private final CurrentLimitsConfigs limitsConfigs;
 
-    private Gains armGains;
     private final ContinuousSoftLimit softLimit;
     private ContinuousSoftLimit limitHelper;
 

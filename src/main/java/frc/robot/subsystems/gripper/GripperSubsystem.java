@@ -2,8 +2,6 @@ package frc.robot.subsystems.gripper;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.excalib.control.gains.Gains;
@@ -13,7 +11,6 @@ import monologue.Annotations.Log;
 import monologue.Logged;
 
 import static frc.robot.subsystems.gripper.GripperConstants.*;
-import static monologue.Annotations.*;
 
 public class GripperSubsystem extends SubsystemBase implements Logged {
     private final TalonFXMotor gripperMotor;
