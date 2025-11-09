@@ -21,7 +21,7 @@ import java.util.function.DoubleSupplier;
 
 import static frc.robot.subsystems.intake.IntakeConstants.*;
 
-public class Intake extends SubsystemBase implements Logged {
+public class IntakeSubsystem extends SubsystemBase implements Logged {
     public final TalonFXMotor armMotor;
     private final TalonFXMotor rollersMotor, centerlizerMotor;
     public final Arm arm;
@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase implements Logged {
     public DoubleSupplier angleSupplier;
     private final CurrentLimitsConfigs limitsConfigs;
 
-    public Intake() {
+    public IntakeSubsystem() {
         armMotor = new TalonFXMotor(ARM_MOTOR_ID);
         rollersMotor = new TalonFXMotor(ROLLERS_MOTOR_ID);
         centerlizerMotor = new TalonFXMotor(CENTERLIZER_MOTOR_ID);

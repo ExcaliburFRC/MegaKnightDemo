@@ -15,7 +15,7 @@ import monologue.Logged;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
 import static monologue.Annotations.*;
 
-public class Gripper extends SubsystemBase implements Logged {
+public class GripperSubsystem extends SubsystemBase implements Logged {
     private final TalonFXMotor gripperMotor;
     public final AnalogInput sensor = new AnalogInput(0); // The number is just a placeholder
     public GripperStates currentState = GripperStates.VACENT;
@@ -32,7 +32,7 @@ public class Gripper extends SubsystemBase implements Logged {
 
     private final FlyWheel gripperWheels;
 
-    public Gripper() {
+    public GripperSubsystem() {
         gripperMotor = new TalonFXMotor(MOTOR_ID);
 
         CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
